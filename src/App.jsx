@@ -1245,17 +1245,15 @@ export default function App(){
         // Only update state if server data is newer (merge, don't replace)
         // For completados and diasCerrados: merge server data WITH local data
         // Local changes always win over server for same key
-        if(d.cargaDays) setCargaDays(d.cargaDays);
-        if(d.notas)     setNotas(d.notas);
-        if(d.solas)     setSolas(d.solas);
-        if(d.cargaHorarios) setCargaH(d.cargaHorarios);
-        if(d.zafarranchos) setZafarranchos(d.zafarranchos);
-        if(d.tareasExtra) setTareasExtra(d.tareasExtra);
-        // Merge completados: keep local keys, add server keys that don't exist locally
+        // All merges: local state always wins over server data
+        if(d.cargaDays) setCargaDays(prev=>({...d.cargaDays,...prev}));
+        if(d.notas)     setNotas(prev=>({...d.notas,...prev}));
+        if(d.solas)     setSolas(prev=>({...d.solas,...prev}));
+        if(d.cargaHorarios) setCargaH(prev=>({...d.cargaHorarios,...prev}));
+        if(d.zafarranchos) setZafarranchos(prev=>({...d.zafarranchos,...prev}));
+        if(d.tareasExtra) setTareasExtra(prev=>({...d.tareasExtra,...prev}));
         if(d.completados) setCompletados(prev=>({...d.completados,...prev}));
-        // Merge diasCerrados: union of both
         if(d.diasCerrados) setDiasCerrados(prev=>({...d.diasCerrados,...prev}));
-        // Merge modoReducido: local wins
         if(d.modoReducido) setModoReducido(prev=>({...d.modoReducido,...prev}));
         setLastSync(new Date().toLocaleTimeString("es-CL"));
         setSyncError(false);
