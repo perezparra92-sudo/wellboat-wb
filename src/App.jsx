@@ -1188,6 +1188,7 @@ export default function App(){
   const [lastSync,setLastSync]=useState(null);
   const [syncError,setSyncError]=useState(false);
   const [dataCargada,setDataCargada]=useState(false); // prevents overwriting before load
+  const dataCargadaRef=useRef(false);
   const [pedirClaveCD,setPedirClaveCD]=useState(false);
   const [pedirClaveNav,setPedirClaveNav]=useState(null);
   const [zafarranchos,setZafarranchos]=useState({});
@@ -1230,8 +1231,8 @@ export default function App(){
         if(d.modoReducido) setModoReducido(d.modoReducido);
         setLastSync(new Date().toLocaleTimeString("es-CL"));
         setSyncError(false);
-        setDataCargada(true);
-      }catch(e){ setSyncError(true); setDataCargada(true); } // allow save even on error
+        setDataCargada(true); dataCargadaRef.current=true;
+      }catch(e){ setSyncError(true); setDataCargada(true); dataCargadaRef.current=true; } // allow save even on error
     })();
   },[]);
 
@@ -1263,7 +1264,7 @@ export default function App(){
   },[]);
 
   const guardar=useCallback((cd,nt,sl,ch,zaf,te,comp,dc,mr)=>{
-    if(!dataCargada) return; // NEVER save before initial data load
+    if(!dataCargadaRef.current) return; // NEVER save before initial data load
     if(timer.current) clearTimeout(timer.current);
     setSyncing(true);
     syncingRef.current=true; // block polling while save is pending
